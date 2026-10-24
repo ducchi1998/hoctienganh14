@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Góc Học Tập - nơi giáo viên chia sẻ bài học và học sinh học trực tuyến.">
+  <title>Góc Học Tập | Lớp học trực tuyến</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Góc Học Tập trang chủ"><span class="brand-mark">✦</span><span>Góc Học Tập<small>Học vui mỗi ngày</small></span></a>
+    <nav><a href="#lessons">Bài học</a><a href="#about">Giới thiệu</a></nav>
+    <div class="account-area"><span id="user-label" class="user-label"></span><button id="auth-open" class="btn btn-outline">Đăng nhập</button><button id="logout-btn" class="btn btn-outline hidden">Đăng xuất</button></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">KHÔNG GIAN HỌC TẬP CỦA BẠN</span>
+        <h1>Mỗi bài học là<br><span>một bước tiến mới.</span></h1>
+        <p>Nơi lưu trữ bài giảng, bài tập và tài liệu để học sinh có thể học mọi lúc, mọi nơi.</p>
+        <div class="hero-actions"><a class="btn btn-primary" href="#lessons">Khám phá bài học <span>↗</span></a><button class="btn btn-soft" id="hero-login">Tài khoản học sinh</button></div>
+        <div class="hero-note"><span class="dot"></span> Học trực tuyến · Dễ tìm · Thân thiện với điện thoại</div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="sun"></div><div class="book book-back"></div><div class="book book-front"><div class="book-line"></div><div class="book-line short"></div><div class="book-star">✦</div></div>
+        <div class="float-card card-one">✎ <span>Bài học mới</span></div><div class="float-card card-two">✓ <span>Tiến bộ mỗi ngày</span></div>
+        <div class="plant"><i></i><i></i><i></i><b></b></div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div><strong>📚</strong><span><b>Kho bài học</b><small>Tài liệu được sắp xếp rõ ràng</small></span></div>
+      <div><strong>🎯</strong><span><b>Học đúng mục tiêu</b><small>Tìm bài theo lớp và chủ đề</small></span></div>
+      <div><strong>💻</strong><span><b>Học ở mọi nơi</b><small>Dùng được trên máy tính, điện thoại</small></span></div>
+    </section>
+
+    <section class="lesson-section" id="lessons">
+      <div class="section-heading"><div><span class="eyebrow">THƯ VIỆN TÀI LIỆU</span><h2>Bài học mới nhất</h2><p>Chọn một bài học để bắt đầu nhé.</p></div><button id="add-open" class="btn btn-primary hidden">＋ Thêm bài học</button></div>
+      <div class="toolbar"><label class="searchbox">⌕ <input id="search" placeholder="Tìm bài học, chủ đề..." aria-label="Tìm bài học"></label><select id="category-filter" aria-label="Lọc theo danh mục"><option value="">Tất cả danh mục</option></select></div>
+      <div id="status" class="status-message">Đang tải bài học...</div>
+      <div id="lesson-grid" class="lesson-grid"></div>
+    </section>
+
+    <section class="teacher-banner" id="about"><div class="banner-icon">✦</div><div><h3>Cùng nhau học tốt hơn</h3><p>Giáo viên có thể đăng bài giảng và tài liệu; học sinh đăng nhập để xem nội dung học tập.</p></div><a href="#lessons" class="banner-link">Xem thư viện <span>→</span></a></section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">✦</span><span>Góc Học Tập<small>Học vui mỗi ngày</small></span></a><p>© <span id="year"></span> Góc Học Tập · Cùng học, cùng tiến bộ.</p></footer>
+
+  <div id="auth-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="auth-title"><div class="modal-card"><button class="modal-close" data-close="auth-modal" aria-label="Đóng">×</button><span class="modal-symbol">✦</span><h2 id="auth-title">Chào mừng bạn!</h2><p class="modal-subtitle">Đăng nhập hoặc tạo tài khoản học sinh.</p><div class="tabs"><button class="tab active" data-mode="login">Đăng nhập</button><button class="tab" data-mode="signup">Tạo tài khoản</button></div><form id="auth-form"><label>Email<input id="auth-email" type="email" required autocomplete="email" placeholder="ban@email.com"></label><label>Mật khẩu<input id="auth-password" type="password" minlength="6" required autocomplete="current-password" placeholder="Ít nhất 6 ký tự"></label><button class="btn btn-primary full" id="auth-submit">Đăng nhập</button></form><p id="auth-message" class="form-message"></p><p class="fine-print">Tài khoản được bảo vệ bởi hệ thống đăng nhập Supabase.</p></div></div>
+
+  <div id="lesson-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="lesson-modal-title"><div class="modal-card modal-wide"><button class="modal-close" data-close="lesson-modal" aria-label="Đóng">×</button><span class="eyebrow">DÀNH CHO GIÁO VIÊN</span><h2 id="lesson-modal-title">Thêm bài học mới</h2><p class="modal-subtitle">Điền thông tin bên dưới để đăng bài lên thư viện.</p><form id="lesson-form" class="lesson-form"><label>Tên bài học *<input id="lesson-title" required maxlength="140" placeholder="Ví dụ: Unit 1 – Hello!"></label><div class="form-row"><label>Môn học / danh mục *<input id="lesson-category" required placeholder="Ví dụ: Tiếng Anh lớp 5"></label><label>Khối lớp<input id="lesson-grade" placeholder="Ví dụ: Lớp 5"></label></div><label>Mô tả ngắn<textarea id="lesson-description" rows="3" placeholder="Nội dung chính của bài học..."></textarea></label><label>Link tài liệu (PDF, Word, Drive...)<input id="lesson-resource" type="url" placeholder="https://..."></label><label>Link video YouTube<input id="lesson-video" type="url" placeholder="https://www.youtube.com/watch?v=..."></label><button class="btn btn-primary full" id="lesson-submit">Đăng bài học</button></form><p id="lesson-message" class="form-message"></p></div></div>
+
+  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detail-title"><div class="modal-card modal-wide"><button class="modal-close" data-close="detail-modal" aria-label="Đóng">×</button><div id="detail-content"></div></div></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
