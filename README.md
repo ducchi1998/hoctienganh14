@@ -43,3 +43,12 @@ Website responsive tiếng Việt, có:
 - Bản khởi đầu lưu đường dẫn tài liệu/video, không tải file lên hệ thống. Có thể dùng Google Drive/OneDrive với quyền chia sẻ phù hợp.
 - Mặc định bài học chỉ đọc được sau khi học sinh đăng nhập. Nếu muốn cho khách chưa đăng nhập xem bài, cần điều chỉnh chính sách RLS.
 - Không đưa khóa bí mật/service-role vào `app.js` hoặc GitHub.
+
+
+## Khôi phục mật khẩu
+
+Website có liên kết **Quên mật khẩu?** trong cửa sổ đăng nhập. Khi triển khai, hãy đưa cả `reset-password.html` lên cùng thư mục với `index.html`, `app.js` và `style.css`.
+
+Trong Supabase, mở **Authentication → URL Configuration → Redirect URLs** và thêm chính xác URL khôi phục sau khi deploy, ví dụ `https://TEN-MIEN-CUA-BAN/reset-password.html` (thay bằng domain Netlify thật đang dùng). Đảm bảo URL website cũng nằm trong danh sách Redirect URLs.
+
+Người dùng chọn **Quên mật khẩu?**, nhập email đăng ký, mở email khôi phục và tạo mật khẩu mới. Nếu chưa nhận email, kiểm tra thư rác và cấu hình email trong Supabase. Liên kết khôi phục có thể hết hạn; khi đó hãy yêu cầu gửi liên kết mới.
