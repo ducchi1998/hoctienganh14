@@ -37,9 +37,30 @@ $("auth-form").addEventListener("submit",async e=>{e.preventDefault();if(!db){se
 function friendlyError(s=""){if(s.includes("Invalid login"))return "Email hoặc mật khẩu chưa đúng.";if(s.includes("already registered"))return "Email này đã được đăng ký.";if(s.includes("Email not confirmed"))return "Bạn cần xác nhận email trước khi đăng nhập.";return s}
 async function loadRole(){currentRole="student";if(!db||!currentUser)return;const {data,error}=await db.from("profiles").select("role").eq("id",currentUser.id).maybeSingle();if(!error&&data)currentRole=data.role||"student";updateAccount()}
 $("add-open").onclick=()=>{if(!currentUser){openAuth();return}showModal("lesson-modal");setMessage("lesson-message","")};
-$("lesson-form").addEventListener("submit",async e=>{e.preventDefault();if(!db||!currentUser||currentRole!=="teacher"){setMessage("lesson-message","Chỉ tài khoản giáo viên mới được đăng bài.",true);return}
- const item={title:$("lesson-title").value.trim(),category:$("lesson-category").value.trim(),grade:$("lesson-grade").value.trim(),description:$("lesson-description").value.trim(),resource_url:$("lesson-resource").value.trim()||null,video_url:$("lesson-video").value.trim()||null,created_by:currentUser.id};
- $("lesson-submit").disabled=true;try{const {error}=await db.from("lessons").insert(item);if(error)throw error;hideModal("lesson-modal");$("lesson-form").reset();toast("Đã đăng bài học!");await loadLessons()}catch(err){setMessage("lesson-message",err.message,true)}finally{$("lesson-submit").disabled=false}
+$("lesson-form").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!db||!currentUser||currentRole!=="teacher"){setMessage("lesson-message","Chỉ tài khoản giáo viên mới được đăng bài.",true);return}
+ const file=$("lesson-mp4").files[0]||null;
+ if(file&&(file.type!=="video/mp4"||file.size>500*1024*1024)){setMessage("lesson-message","Chỉ nhận tệp MP4 tối đa 500 MiB.",true);return}
+ const item={title:$("lesson-title").value.trim(),category:$("lesson-category").value.trim(),grade:$("lesson-grade").value.trim(),description:$("lesson-description").value.trim(),resource_url:$("lesson-resource").value.trim()||null,video_url:$("lesson-video").value.trim()||null,video_path:null,created_by:currentUser.id};
+ const button=$("lesson-submit"),progress=$("upload-progress");button.disabled=true;
+ try{
+  if(file){
+   const path=currentUser.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+   const {data:{session}}=await db.auth.getSession();if(!session)throw new Error("Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.");
+   if(!window.tus)throw new Error("Chưa tải được bộ tải video lớn. Hãy tải lại trang và thử lại.");
+   progress.classList.remove("hidden");progress.value=0;
+   await new Promise((resolve,reject)=>{
+    const upload=new tus.Upload(file,{endpoint:SUPABASE_URL+"/storage/v1/upload/resumable",headers:{authorization:"Bearer "+session.access_token,apikey:SUPABASE_ANON_KEY,"x-upsert":"false"},metadata:{bucketName:"lesson-videos",objectName:path,contentType:"video/mp4",cacheControl:"3600"},chunkSize:6*1024*1024,retryDelays:[0,3000,5000,10000,20000],
+     onProgress:(sent,total)=>{progress.value=Math.round(sent/total*100);setMessage("lesson-message","Đang tải video: "+progress.value+"% (không đóng trang trong khi tải)...")},onError:reject,onSuccess:resolve});upload.start();
+   });
+   item.video_path=path;
+  }
+  const {error}=await db.from("lessons").insert(item);
+  if(error){if(item.video_path)await db.storage.from("lesson-videos").remove([item.video_path]);throw error}
+  hideModal("lesson-modal");$("lesson-form").reset();progress.classList.add("hidden");setMessage("lesson-message","");toast("Đã đăng bài học!");await loadLessons();
+ }catch(err){setMessage("lesson-message",err.message||"Không thể đăng bài học.",true)}
+ finally{button.disabled=false}
 });
 async function loadLessons(){if(!db){lessons=[];renderLessons();$("status").textContent="Bản mẫu đã sẵn sàng. Để đăng bài và đăng nhập thật, hãy cấu hình Supabase theo README.md.";return}
  $("status").textContent="Đang tải bài học...";const {data,error}=await db.from("lessons").select("*").order("created_at",{ascending:false});if(error){$("status").textContent="Không tải được bài học. Hãy kiểm tra cấu hình Supabase và chính sách SQL.";lessons=[]}else{lessons=data||[];$("status").textContent=lessons.length?"":"Chưa có bài học nào. Giáo viên đăng nhập để thêm bài đầu tiên."}renderLessons()}
@@ -49,7 +70,21 @@ function renderLessons(){const q=$("search").value.toLowerCase().trim(),cat=$("c
  document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>openDetail(b.dataset.detail))}
 $("search").addEventListener("input",renderLessons);$("category-filter").addEventListener("change",renderLessons);
 function youtubeId(url=""){try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1);if(u.hostname.includes("youtube.com"))return u.searchParams.get("v")||u.pathname.split("/").pop()}catch{}return null}
-function openDetail(id){const l=lessons.find(x=>String(x.id)===String(id));if(!l)return;const video=youtubeId(l.video_url||"");$("detail-content").innerHTML=`<span class="eyebrow">GÓC HỌC TẬP</span><span class="detail-category">${escapeHtml(l.category||"Bài học")}${l.grade?" · "+escapeHtml(l.grade):""}</span><h2 id="detail-title">${escapeHtml(l.title)}</h2><p class="detail-description">${escapeHtml(l.description||"Chưa có mô tả cho bài học này.")}</p><div class="detail-actions">${l.resource_url?`<a class="btn btn-primary" href="${escapeHtml(l.resource_url)}" target="_blank" rel="noopener">↗ Mở tài liệu</a>`:""}${l.video_url?`<a class="btn btn-soft" href="${escapeHtml(l.video_url)}" target="_blank" rel="noopener">▶ Mở video</a>`:""}${currentRole==="teacher"?`<button class="btn delete-btn" id="delete-lesson">Xóa bài học</button>`:""}</div>${video?`<iframe class="video-frame" src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(video)}" title="Video bài học" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`:""}${!l.resource_url&&!l.video_url?'<p class="form-message">Giáo viên chưa thêm link tài liệu hoặc video cho bài học này.</p>':""}`;
- if(currentRole==="teacher")$("delete-lesson").onclick=async()=>{if(!confirm("Bạn có chắc muốn xóa bài học này?"))return;const {error}=await db.from("lessons").delete().eq("id",l.id);if(error){toast("Không thể xóa: "+error.message);return}hideModal("detail-modal");toast("Đã xóa bài học.");await loadLessons()};showModal("detail-modal")}
+async function openDetail(id){
+ const l=lessons.find(x=>String(x.id)===String(id));if(!l)return;
+ const video=youtubeId(l.video_url||"");let mp4Url=null;
+ if(l.video_path&&currentUser){const {data,error}=await db.storage.from("lesson-videos").createSignedUrl(l.video_path,3600);if(error){toast("Không thể mở video MP4: "+error.message)}else mp4Url=data.signedUrl}
+ let body='<span class="eyebrow">GÓC HỌC TẬP</span><span class="detail-category">'+escapeHtml(l.category||"Bài học")+(l.grade?" · "+escapeHtml(l.grade):"")+'</span><h2 id="detail-title">'+escapeHtml(l.title)+'</h2><p class="detail-description">'+escapeHtml(l.description||"Chưa có mô tả cho bài học này.")+'</p><div class="detail-actions">';
+ if(l.resource_url)body+='<a class="btn btn-primary" href="'+escapeHtml(l.resource_url)+'" target="_blank" rel="noopener">↗ Mở tài liệu</a>';
+ if(l.video_url)body+='<a class="btn btn-soft" href="'+escapeHtml(l.video_url)+'" target="_blank" rel="noopener">▶ Mở video</a>';
+ if(currentRole==="teacher")body+='<button class="btn delete-btn" id="delete-lesson">Xóa bài học</button>';
+ body+='</div>';
+ if(mp4Url)body+='<video class="video-player" controls playsinline preload="metadata" src="'+escapeHtml(mp4Url)+'"></video>';
+ if(video)body+='<iframe class="video-frame" src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(video)+'" title="Video bài học" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+ if(!l.resource_url&&!l.video_url&&!l.video_path)body+='<p class="form-message">Giáo viên chưa thêm link tài liệu hoặc video cho bài học này.</p>';
+ $("detail-content").innerHTML=body;
+ if(currentRole==="teacher")$("delete-lesson").onclick=async()=>{if(!confirm("Bạn có chắc muốn xóa bài học này?"))return;if(l.video_path){const {error:storageError}=await db.storage.from("lesson-videos").remove([l.video_path]);if(storageError){toast("Không thể xóa video: "+storageError.message);return}}const {error}=await db.from("lessons").delete().eq("id",l.id);if(error){toast("Không thể xóa: "+error.message);return}hideModal("detail-modal");toast("Đã xóa bài học.");await loadLessons()};
+ showModal("detail-modal")
+}
 async function init(){if(!isConfigured){updateAccount();await loadLessons();return}const {data:{session}}=await db.auth.getSession();if(session){currentUser=session.user;await loadRole()}db.auth.onAuthStateChange(async(_event,session)=>{currentUser=session?.user||null;if(currentUser)await loadRole();else{currentRole="student";updateAccount()}await loadLessons()});await loadLessons()}
 init();
