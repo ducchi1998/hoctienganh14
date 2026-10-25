@@ -51,8 +51,8 @@ $("lesson-form").addEventListener("submit",async e=>{
    if(!window.tus)throw new Error("Chưa tải được bộ tải video lớn. Hãy tải lại trang và thử lại.");
    progress.classList.remove("hidden");progress.value=0;
    await new Promise((resolve,reject)=>{
-    const upload=new tus.Upload(file,{endpoint:SUPABASE_URL+"/storage/v1/upload/resumable",headers:{authorization:"Bearer "+session.access_token,apikey:SUPABASE_ANON_KEY,"x-upsert":"false"},metadata:{bucketName:"lesson-videos",objectName:path,contentType:"video/mp4",cacheControl:"3600"},chunkSize:6*1024*1024,retryDelays:[0,3000,5000,10000,20000],
-     onProgress:(sent,total)=>{progress.value=Math.round(sent/total*100);setMessage("lesson-message","Đang tải video: "+progress.value+"% (không đóng trang trong khi tải)...")},onError:reject,onSuccess:resolve});upload.start();
+    const upload=new tus.Upload(file,{endpoint:SUPABASE_URL.replace(".supabase.co",".storage.supabase.co")+"/storage/v1/upload/resumable",uploadDataDuringCreation:true,removeFingerprintOnSuccess:true,headers:{authorization:"Bearer "+session.access_token,apikey:SUPABASE_ANON_KEY,"x-upsert":"false"},metadata:{bucketName:"lesson-videos",objectName:path,contentType:"video/mp4",cacheControl:"3600"},chunkSize:6*1024*1024,retryDelays:[0,3000,5000,10000,20000],
+     onProgress:(sent,total)=>{progress.value=Math.round(sent/total*100);setMessage("lesson-message","Đang tải video: "+progress.value+"% (không đóng trang trong khi tải)...")},onError:reject,onSuccess:resolve});upload.findPreviousUploads().then(previous=>{if(previous.length)upload.resumeFromPreviousUpload(previous[0]);upload.start()}).catch(reject);
    });
    item.video_path=path;
   }
