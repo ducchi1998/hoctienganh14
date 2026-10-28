@@ -10,3 +10,129 @@
 #detail-modal .video-player,#detail-modal .video-frame{display:block;width:100%;max-width:100%;aspect-ratio:16/9;height:auto;max-height:76vh;background:#111;border:0;border-radius:12px;margin-top:14px}
 #detail-modal .video-player{object-fit:contain}
 @media(max-width:600px){#detail-modal .modal-card.modal-wide{width:100%;padding:24px 16px}#detail-modal .video-player,#detail-modal .video-frame{max-height:55vh}}
+
+
+/* ===== Giao diện nâng cấp: rõ ràng, hiện đại, dễ thao tác ===== */
+:root{
+  --ink:#17243b;
+  --muted:#66758b;
+  --primary:#4f46e5;
+  --primary-dark:#3730a3;
+  --mint:#e7f8f1;
+  --line:#e5eaf3;
+  --bg:#f7f9fd;
+  --shadow:0 16px 42px rgba(26,42,76,.09);
+}
+body{background:linear-gradient(180deg,#f8faff 0%,#fff 54%,#f8faff 100%);color:var(--ink)}
+.topbar{position:sticky;top:0;z-index:8;height:76px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(30,45,80,.045);border-bottom:1px solid rgba(229,234,243,.9)}
+.brand{gap:12px}
+.brand-mark{background:linear-gradient(145deg,#eef0ff,#e4e8ff);border:1px solid #e1e5ff;box-shadow:0 5px 14px #4f46e510}
+.topbar nav{align-items:center;gap:8px}
+.topbar nav a{padding:10px 14px;border-radius:10px;transition:background .2s,color .2s}
+.topbar nav a:hover{background:#f0f1ff;color:var(--primary)}
+.btn{min-height:42px;border-radius:12px;transition:transform .18s,box-shadow .18s,background .18s}
+.btn:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a5b4fc;outline-offset:3px}
+.btn-primary{background:linear-gradient(135deg,#5b5ce2,#4945d4);box-shadow:0 7px 18px rgba(79,70,229,.2)}
+.btn-primary:hover{background:linear-gradient(135deg,#4f46e5,#3730a3);box-shadow:0 10px 24px rgba(79,70,229,.25)}
+.btn-outline{border-color:#dce3ef}
+.hero{max-width:1240px;min-height:460px;padding:68px 38px 54px;gap:50px}
+.hero-copy{position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:#eeeeff;letter-spacing:1.25px}
+h1{font-size:clamp(40px,4.6vw,62px);line-height:1.13;letter-spacing:-2.4px;margin:20px 0}
+.hero-copy>p{max-width:510px;font-size:15px;line-height:1.95;color:#5f6e84}
+.hero-actions{gap:13px}
+.hero-actions .btn{padding:14px 20px}
+.hero-note{margin-top:30px}
+.hero-art{height:350px;border-radius:34px;background:radial-gradient(circle at 55% 45%,#f0efff 0,#f5f6ff 46%,rgba(245,247,255,0) 72%)}
+.sun{background:linear-gradient(145deg,#e8e9ff,#f2f1ff);box-shadow:inset 0 0 0 1px #fff}
+.book{box-shadow:0 28px 45px rgba(57,59,133,.16)}
+.float-card{border:1px solid rgba(231,235,246,.9);box-shadow:0 12px 30px rgba(37,54,93,.1);border-radius:16px}
+.stats{max-width:1140px;margin:0 auto 82px;padding:24px 26px;border-radius:22px;box-shadow:0 15px 42px rgba(37,54,93,.055);border-color:#edf0f7}
+.stats>div{padding:8px 22px}
+.stats strong{width:48px;height:48px;border-radius:15px}
+.lesson-section{max-width:1180px;padding:0 28px 78px;scroll-margin-top:100px}
+.section-heading{align-items:flex-end;margin-bottom:26px}
+.section-heading h2{font-size:clamp(27px,3vw,34px);letter-spacing:-1.1px;margin:10px 0}
+.section-heading p{font-size:13px;line-height:1.7}
+.toolbar{align-items:center;gap:14px;margin:24px 0 26px}
+.searchbox{max-width:none;min-height:50px;border-radius:14px;padding:0 16px;border-color:#e2e7f1;box-shadow:0 3px 12px rgba(37,54,93,.025);font-size:22px}
+.searchbox:focus-within{border-color:#a5b4fc;box-shadow:0 0 0 4px #6366f115}
+.searchbox input{font-size:13px;padding:15px 0}
+.toolbar select{height:50px;min-width:205px;border-radius:14px;border-color:#e2e7f1;font-size:12px;box-shadow:0 3px 12px rgba(37,54,93,.025)}
+.status-message{border-radius:14px;margin:12px 0;color:#64748b}
+.lesson-grid{gap:22px}
+.lesson-card{border:1px solid #e9edf5;border-radius:20px;box-shadow:0 8px 24px rgba(37,54,93,.045);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.lesson-card:hover{transform:translateY(-5px);border-color:#d9dcff;box-shadow:0 18px 38px rgba(37,54,93,.1)}
+.lesson-cover{height:150px;padding:23px}
+.cover-icon{display:grid;place-items:center;width:54px;height:54px;border-radius:17px;background:#ffffffad;box-shadow:0 5px 16px #26345b0c}
+.category-pill{font-size:10px;padding:8px 11px}
+.lesson-body{padding:21px}
+.lesson-body h3{font-size:15px;line-height:1.6;letter-spacing:-.15px}
+.lesson-body p{font-size:12px;line-height:1.8;min-height:44px}
+.lesson-meta{margin-top:18px;padding-top:15px;font-size:11px}
+.lesson-meta button{padding:8px 0 8px 8px;border-radius:8px}
+.lesson-meta button:hover{color:#3730a3;text-decoration:underline}
+.empty-state{grid-column:1/-1;background:#fff;border:1px dashed #d8deec;border-radius:16px}
+.teacher-banner{max-width:1124px;margin:0 auto 82px;padding:32px 36px;border:1px solid #e5e6ff;background:linear-gradient(120deg,#f0f0ff,#f3fbff);border-radius:24px;gap:22px}
+.banner-icon{box-shadow:0 6px 16px #4f46e510}
+.teacher-banner h3{font-size:18px}
+.teacher-banner p{font-size:12px;max-width:630px}
+.banner-link{padding:12px 14px;border-radius:11px;background:#fff;font-size:12px;box-shadow:0 4px 14px #4f46e50a}
+.banner-link:hover{background:#eeeeff}
+footer{background:rgba(255,255,255,.92);padding-top:28px;padding-bottom:28px}
+.modal{background:rgba(17,29,53,.62);backdrop-filter:blur(5px)}
+.modal-card{border:1px solid rgba(255,255,255,.7);box-shadow:0 28px 90px rgba(9,21,47,.25);border-radius:24px}
+.modal-close{transition:background .2s,transform .2s}
+.modal-close:hover{background:#e8eaff;transform:rotate(90deg)}
+form label{font-size:12px;color:#40516b}
+form input,form textarea{border-color:#dfe5f0;border-radius:12px;font-size:13px;padding:13px 14px}
+form input:focus,form textarea:focus{border-color:#818cf8;box-shadow:0 0 0 4px #6366f116}
+.toast{box-shadow:0 12px 35px #09152f30}
+@media(max-width:850px){
+ .topbar{height:72px}
+ .hero{padding:48px 26px 38px;gap:12px}
+ .stats{margin:0 20px 60px}
+ .lesson-section{padding-left:22px;padding-right:22px}
+ .teacher-banner{margin-left:20px;margin-right:20px}
+}
+@media(max-width:560px){
+ .topbar{height:68px;padding:0 14px;gap:10px}
+ .brand{gap:8px}
+ .brand small{font-size:9px}
+ .account-area .btn{min-height:38px;padding:9px 11px}
+ .hero{padding:36px 21px 24px}
+ h1{font-size:clamp(36px,10vw,46px);letter-spacing:-1.8px}
+ .hero-copy>p{font-size:13px;line-height:1.85}
+ .hero-actions{display:grid;grid-template-columns:1fr}
+ .hero-actions .btn{width:100%;padding:13px 15px}
+ .hero-art{height:235px;margin-top:4px}
+ .stats{margin:0 14px 48px;padding:13px 16px;border-radius:18px}
+ .stats>div{padding:11px 4px}
+ .stats strong{width:42px;height:42px}
+ .lesson-section{padding:0 16px 54px;scroll-margin-top:80px}
+ .section-heading{gap:15px}
+ .section-heading h2{font-size:27px}
+ .section-heading .btn{width:100%}
+ .toolbar{gap:10px;margin:20px 0}
+ .searchbox{min-height:48px}
+ .toolbar select{height:48px;width:100%}
+ .lesson-grid{gap:15px}
+ .lesson-card{border-radius:17px}
+ .lesson-cover{height:112px;padding:14px}
+ .cover-icon{width:42px;height:42px;border-radius:13px;font-size:27px}
+ .category-pill{font-size:9px;padding:7px 8px}
+ .lesson-body{padding:15px}
+ .lesson-body h3{font-size:14px}
+ .lesson-body p{font-size:11px;min-height:42px}
+ .lesson-meta{align-items:flex-start;gap:8px;flex-direction:column}
+ .lesson-meta button{padding:4px 0}
+ .teacher-banner{margin:0 14px 50px;padding:22px;border-radius:19px}
+ .teacher-banner>div:nth-child(2){min-width:0}
+ .banner-link{margin-left:0}
+ footer{padding:22px 18px}
+ .modal{padding:12px}
+ .modal-card{border-radius:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
