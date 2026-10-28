@@ -10,8 +10,20 @@ const icons = ["📘","✏️","🧩","🌱","🔎","🎨","🧠","🌟"];
 const colors = ["linear-gradient(135deg,#eeeefe,#f8f7ff)","linear-gradient(135deg,#e5f8f1,#f5fffb)","linear-gradient(135deg,#fff0e2,#fffaf5)","linear-gradient(135deg,#e8f4ff,#f8fbff)"];
 $("year").textContent = new Date().getFullYear();
 
-function showModal(id){$(id).classList.remove("hidden");}
-function hideModal(id){$(id).classList.add("hidden");}
+function stopModalMedia(modal){
+ if(!modal)return;
+ modal.querySelectorAll("video").forEach(video=>{try{video.pause();video.currentTime=0;}catch(_){}});
+ modal.querySelectorAll("iframe").forEach(frame=>{try{frame.src="about:blank";}catch(_){}});
+}
+function showModal(id){
+ document.querySelectorAll(".modal").forEach(modal=>{
+  if(modal.id!==id){stopModalMedia(modal);modal.classList.add("hidden");}
+ });
+ const target=$(id);if(target){target.classList.remove("hidden");target.setAttribute("aria-hidden","false");}
+}
+function hideModal(id){
+ const target=$(id);if(target){stopModalMedia(target);target.classList.add("hidden");target.setAttribute("aria-hidden","true");}
+}
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>hideModal(b.dataset.close)));
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)hideModal(m.id)}));
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3000)}
