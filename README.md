@@ -52,3 +52,15 @@ Website có liên kết **Quên mật khẩu?** trong cửa sổ đăng nhập. 
 Trong Supabase, mở **Authentication → URL Configuration → Redirect URLs** và thêm chính xác URL khôi phục sau khi deploy, ví dụ `https://TEN-MIEN-CUA-BAN/reset-password.html` (thay bằng domain Netlify thật đang dùng). Đảm bảo URL website cũng nằm trong danh sách Redirect URLs.
 
 Người dùng chọn **Quên mật khẩu?**, nhập email đăng ký, mở email khôi phục và tạo mật khẩu mới. Nếu chưa nhận email, kiểm tra thư rác và cấu hình email trong Supabase. Liên kết khôi phục có thể hết hạn; khi đó hãy yêu cầu gửi liên kết mới.
+
+## Bảng điều khiển giáo viên
+
+Sau khi đăng nhập bằng tài khoản có vai trò teacher, nút **Quản trị bài học** sẽ xuất hiện trong khu vực thư viện. Từ đây giáo viên có thể:
+- Xem tổng số bài học, số bài có video và số bài có tài liệu.
+- Tìm kiếm nội dung đã đăng.
+- Mở bài học để xem nội dung.
+- Chỉnh sửa tiêu đề, danh mục, khối lớp, mô tả, liên kết tài liệu và liên kết YouTube.
+- Tải video MP4 mới để thay video hiện tại.
+- Xóa bài học cùng video MP4 đã lưu trong bucket riêng tư.
+
+Quyền thêm, sửa, xóa vẫn dựa trên vai trò giáo viên trong public.profiles và chính sách Row Level Security của Supabase. Sau khi cập nhật mã nguồn trên GitHub, hãy chờ Netlify triển khai xong rồi tải lại trang bằng Ctrl + F5.
