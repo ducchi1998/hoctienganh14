@@ -64,3 +64,15 @@ Sau khi đăng nhập bằng tài khoản có vai trò teacher, nút **Quản tr
 - Xóa bài học cùng video MP4 đã lưu trong bucket riêng tư.
 
 Quyền thêm, sửa, xóa vẫn dựa trên vai trò giáo viên trong public.profiles và chính sách Row Level Security của Supabase. Sau khi cập nhật mã nguồn trên GitHub, hãy chờ Netlify triển khai xong rồi tải lại trang bằng Ctrl + F5.
+ 
+## Bài trắc nghiệm và chấm điểm tự động
+
+**Bắt buộc sau khi cập nhật mã nguồn:** mở Supabase → SQL Editor và chạy phần SQL mới cho bài trắc nghiệm ở cuối file `supabase.sql`. Có thể dán và chạy toàn bộ file để tạo bảng, chính sách RLS và hai hàm RPC.
+
+- Giáo viên đăng nhập, mở **Quản trị bài học**, chọn **Trắc nghiệm** bên cạnh bài học cần tạo.
+- Nhập tên bài, thêm câu hỏi, điền đủ 4 lựa chọn và chọn đáp án đúng, sau đó lưu.
+- Học sinh đăng nhập, mở bài học và chọn **Làm bài trắc nghiệm** để trả lời và nộp bài.
+- Hệ thống tự động chấm điểm, lưu các lần làm bài và hiển thị kết quả.
+- Đáp án đúng không được gửi tới trình duyệt học sinh; việc chấm điểm chạy trong Supabase.
+
+Mặc định mỗi câu đúng được 1 điểm. Điểm phần trăm = số câu đúng / tổng số câu × 100. Giáo viên có thể xem các lượt làm bài trong hộp thoại quản lý trắc nghiệm.
